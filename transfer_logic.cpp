@@ -24,7 +24,7 @@ bool sendFile(int socket, string filepath){
                 return false;
             }
             presentBytes += bytesRead;
-            float percentage = (float)((presentBytes / fileSize) * 100);
+            float percentage = ((float)presentBytes / (float)fileSize) * 100.0f;
             cout<<"\rSent: " << percentage << "%"<<flush;
         }
     }
@@ -50,7 +50,7 @@ bool receiveFile(int socket, string filepath){
         int bytesReceived = recv(socket, buffer, toRead, 0);
         file.write(buffer, bytesReceived);
         totalReceived += bytesReceived;
-        float percentage = (float)((totalReceived / fileSize) * 100);
+        float percentage = ((float)totalReceived / (float)fileSize) * 100.0f;
         cout<<"\rReceived: " << percentage << "%"<<flush;
     }
     file.close();
