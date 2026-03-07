@@ -54,7 +54,7 @@ int main(){
 
     if(choice == 'c'){
         string ip_address;
-        cout<<"Enter client's IP address: ";
+        cout<<"Enter servers's IP address: ";
         cin>>ip_address;
         int portno;
         cout<<"Enter port number: ";
