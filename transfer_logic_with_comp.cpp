@@ -1,4 +1,5 @@
 #include "transfer_logic.hpp"
+#include "bit_packing_functions.hpp"
 char buffer[4096];
 
 bool sendFile(int socket, string filepath){
@@ -16,7 +17,8 @@ bool sendFile(int socket, string filepath){
         file.read(buffer, sizeof(buffer));
         streamsize bytesRead = file.gcount();
         if(bytesRead> 0){
-            int sent = send(socket, buffer, bytesRead, 0);
+            vector<uint8_t> compressed = compressVector(buffer, bytesRead);
+            int sent = send(socket, compressed.data(), compressed.size(), 0);
             if(sent == -1){
                 file.close();
                 cout<<"File failed to send"<<endl;
@@ -41,14 +43,21 @@ bool receiveFile(int socket, string filepath){
         cout<<"Failed to receive file"<<endl;
         return false;
     }
-    char buffer[4096];
+    char buffer[4096];  
     long totalReceived = 0;
 
     while((totalReceived < fileSize)){
         long toRead = min((long)sizeof(buffer), fileSize - totalReceived);
-        long bytesReceived = recv(socket, buffer, toRead, 0);
-        file.write(buffer, bytesReceived);
-        totalReceived += bytesReceived;
+        vector<uint8_t> compressed(toRead);        
+        long bytesReceived = recv(socket, (char*)compressed.data(), toRead, 0);
+        long decompressedSize = bytesReceived * 8;
+        if(decompressedSize + totalReceived > fileSize){
+            decompressedSize = fileSize - totalReceived;
+        }
+        char decompressed_Buffer[decompressedSize];
+        decompressVector(compressed, decompressed_Buffer, bytesReceived);
+        file.write(decompressed_Buffer, decompressedSize);
+        totalReceived += decompressedSize;
         float percentage = ((float)totalReceived / (float)fileSize) * 100.0f;
         cout<<"\rReceived: " << (int)percentage << "%"<<flush;
         if(totalReceived == fileSize)
