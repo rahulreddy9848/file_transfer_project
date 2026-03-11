@@ -60,7 +60,7 @@ bool receiveFile(int socket, string filepath){
         totalReceived += decompressedSize;
         float percentage = ((float)totalReceived / (float)fileSize) * 100.0f;
         cout<<"\rReceived: " << (int)percentage << "%"<<flush;
-        if(totalReceived == fileSize)
+        if(totalReceived == fileSize || percentage == 100.0)
             break;
     }
     cout<<endl;

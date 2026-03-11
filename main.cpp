@@ -1,6 +1,7 @@
 #include <iostream>
 #include "socket_utils.hpp"
 #include "transfer_logic.hpp"
+#include <ctime>
 using namespace std;
 
 int main(){
@@ -88,13 +89,20 @@ int main(){
             cout<<"Enter path of file to send: ";
             cin>>filepath;
             if(choice == 's'){
+                time_t start = time(NULL);
                 if(sendFile(accSocket, filepath)){
-                    cout<<"File sent successfuly"<<endl;
+                    time_t end = time(NULL);
+                    int seconds = (int)end - start;
+                    cout<<"File sent successfuly in "<<seconds<<" seconds"<<endl;
                 }
             }
             else{
+                time_t start = time(NULL);
                 if(sendFile(clientSocket, filepath)){
-                    cout<<"File sent successfuly"<<endl;
+                    time_t end = time(NULL);
+                    int seconds = (int)end - start;
+                    cout<<"File sent successfuly in "<<seconds<<" seconds"<<endl;
+
                 }
             }
         }
@@ -103,13 +111,19 @@ int main(){
             cout<<"Enter where you want to store the received file: ";
             cin>>filepath;
             if(choice == 'c'){
+                time_t start = time(NULL);
                 if(receiveFile(clientSocket, filepath)){
-                    cout<<"File received succesfully"<<endl;
+                    time_t end = time(NULL);
+                    int seconds = (int)end - start;
+                    cout<<"File received succesfully "<<seconds<<" seconds"<<endl;
                 }
             }
             else{
-                if(receiveFile(accSocket, filepath)){
-                    cout<<"File received succesfully"<<endl;
+                time_t start = time(NULL);
+                if(receiveFile(accSocket, filepath)){                    
+                    time_t end = time(NULL);
+                    int seconds = (int)end - start;
+                    cout<<"File received succesfully "<<seconds<<" seconds"<<endl;
                 }
             }
         }
