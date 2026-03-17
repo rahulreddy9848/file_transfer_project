@@ -1,5 +1,5 @@
 #include "transfer_logic.hpp"
-char buffer[4096];
+char buffer[1048576 * 2];
 
 bool sendFile(int socket, string filepath){
     ifstream file(filepath, ios::binary | ios:: ate);
